@@ -1,0 +1,12 @@
+{
+  "Author": "hunter2_",
+  "Name": "Nonograms",
+  "Punchline": "Classic puzzle game.",
+  "Description": "Logic puzzle in which you find and flag hidden mines.\n\nLeft click to uncover a square, right click to place a flag.\nThe game ends when all safe squares have been uncovered.\nClick the smiley face to start a new game.",
+  "ApplicableVersion": "any",
+    "Tags": [
+    "Nonograms",
+    "minigame",
+    "puzzle"
+  ]
+}

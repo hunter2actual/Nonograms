@@ -1,0 +1,27 @@
+[
+  {
+    "Author": "hunter2_",
+    "Name": "Nonograms",
+    "InternalName": "Nonograms",
+    "AssemblyVersion": "0.0.1",
+    "Description": "Nonograms, also known as Hanjie, Paint by Numbers, Picross, Griddlers, and Pic-a-Pix, are picture logic puzzles in which cells in a grid must be colored or left blank according to numbers at the edges of the grid to reveal a hidden picture",
+    "ApplicableVersion": "any",
+    "Tags": [
+      "nonograms",
+      "picross",
+      "minigame",
+      "puzzle"
+    ],
+    "DalamudApiLevel": 9,
+    "LoadRequiredState": 0,
+    "LoadSync": false,
+    "CanUnloadAsync": false,
+    "LoadPriority": 0,
+    "Punchline": "Classic puzzle game.",
+    "AcceptsFeedback": true,
+    "DownloadLinkInstall": "https://github.com/hunter2actual/Nonograms/releases/download/0.0.1/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/hunter2actual/Nonograms/releases/download/0.0.1/latest.zip",
+    "IconUrl": "https://raw.githubusercontent.com/hunter2actual/Nonograms/master/images/icon.png",
+    "Changelog": "start development"
+  }
+]
