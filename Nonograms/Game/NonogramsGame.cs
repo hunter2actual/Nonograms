@@ -7,21 +7,14 @@ namespace Nonograms.Game;
 
 public class NonogramsGame
 {
+    private readonly PuzzleStateManager _puzzleStateManager;
     private BoardBuilder _boardBuilder;
     public Board Board;
     public GameState GameState { get; private set; }
     
-    public NonogramsGame()
+    public NonogramsGame(PuzzleStateManager puzzleStateManager, LoadedPuzzle puzzle)
     {
-        _boardBuilder = new BoardBuilder();
-        Board = _boardBuilder.Build();
-        GameState = GameState.Playing;
-        UpdateHintSatisfaction();
-        AutoCrossAll();
-    }
-
-    public NonogramsGame(LoadedPuzzle puzzle)
-    {
+        _puzzleStateManager = puzzleStateManager;
         _boardBuilder = new BoardBuilder();
         _boardBuilder.WithData(puzzle.data);
         Board = _boardBuilder.Build();
@@ -44,6 +37,7 @@ public class NonogramsGame
         UpdateHintSatisfaction();
         AutoCross(x, y);
         CheckWin();
+        SaveProgress();
     }
     
     public void Clear(int x, int y)
@@ -55,6 +49,7 @@ public class NonogramsGame
         UpdateHintSatisfaction();
         AutoCross(x, y);
         CheckWin();
+        SaveProgress();
     }
     
     public void Clear(IEnumerable<(int x, int y)> cells)
@@ -69,6 +64,7 @@ public class NonogramsGame
         UpdateHintSatisfaction();
         AutoCross(cells);
         CheckWin();
+        SaveProgress();
     }
     
     public void Fill(int x, int y)
@@ -80,6 +76,7 @@ public class NonogramsGame
         UpdateHintSatisfaction();
         AutoCross(x, y);
         CheckWin();
+        SaveProgress();
     }
     
     public void Fill(IEnumerable<(int x, int y)> cells)
@@ -94,6 +91,7 @@ public class NonogramsGame
         UpdateHintSatisfaction();
         AutoCross(cells);
         CheckWin();
+        SaveProgress();
     }
 
     public void RightClick(int x, int y)
@@ -109,6 +107,10 @@ public class NonogramsGame
             _ => throw new NotSupportedException()
         };
         Board.cells[x, y] = cell;
+        UpdateHintSatisfaction();
+        AutoCross(x, y);
+        CheckWin();
+        SaveProgress();
     }
 
     private void UpdateHintSatisfaction()
@@ -163,11 +165,12 @@ public class NonogramsGame
     {
         for (int x = 0; x < Board.width; x++)
         {
-            for (int y = 0; y < Board.height; y++)
-            {
-                if (Board.rowConstraints[y].satisfied) CrossRow(y);
-                if (Board.columnConstraints[x].satisfied) CrossColumn(x);
-            }
+            if (Board.columnConstraints[x].satisfied) CrossColumn(x);
+        }
+        
+        for (int y = 0; y < Board.height; y++)
+        {
+            if (Board.rowConstraints[y].satisfied) CrossRow(y);
         }
     }
 
@@ -193,5 +196,52 @@ public class NonogramsGame
                 _ => CellContents.Cross
             };
         }
+    }
+
+    public void InitialiseFromState(PuzzleState savedState)
+    {
+        if (savedState.BoardState is null || savedState.BoardState.Length == 0) return;
+        
+        for (int x = 0; x < Board.width; x++)
+        {
+            for (int y = 0; y < Board.height; y++)
+            {
+                if (savedState.Completed)
+                {
+                    Board.cells[x, y].contents = Board.cells[x, y].isSolid 
+                        ? CellContents.Filled 
+                        : CellContents.Nothing;
+                }
+                else
+                {
+                    Board.cells[x, y].contents = savedState.BoardState[x, y]
+                        ? CellContents.Filled
+                        : CellContents.Nothing;
+                }
+            }
+        }
+        
+        UpdateHintSatisfaction();
+        AutoCrossAll();
+        CheckWin();
+        SaveProgress();
+    }
+
+    public void SaveProgress()
+    {
+        var puzzleState = _puzzleStateManager.GetCurrentPuzzleState();
+        puzzleState.Completed = GameState is GameState.Victorious;
+
+        var boardState = new bool[Board.width, Board.height];
+        for (int x = 0; x < Board.width; x++)
+        {
+            for (int y = 0; y < Board.height; y++)
+            {
+                boardState[x, y] = Board.cells[x, y].contents is CellContents.Filled;
+            }
+        }
+        puzzleState.BoardState = boardState;
+
+        _puzzleStateManager.SetCurrentPuzzleState(puzzleState);
     }
 }
