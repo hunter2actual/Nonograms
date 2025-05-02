@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Nonograms;
 
 public static class Colours
@@ -16,4 +18,7 @@ public static class Colours
     public static uint OrangeHighlight => 0x550099FF;
     public static uint Red => 0xFF1111FE;
     public static uint Transparency => 0x00000000;
+    public static uint Green => 0xFF57993D;
+    public static uint GreenHighlight => 0xFF59B336;
+    public static uint GreenActive => 0xFF57CC29;
 }

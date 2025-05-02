@@ -2,7 +2,8 @@ using System.Collections.Generic;
 
 namespace Nonograms.Game;
 
-public static class Array2dExtensions {
+public static class Array2dExtensions 
+{
     public static List<T> ToList<T>(this T[,] array)
     {
         var result = new List<T>();

@@ -1,6 +1,7 @@
 ﻿using Dalamud.Configuration;
 using Dalamud.Plugin;
 using System;
+using System.Collections.Generic;
 
 namespace Nonograms;
 
@@ -9,17 +10,10 @@ public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
     public int Zoom { get; set; } = 100;
-    // public int BoardWidth { get; set; } = 16;
-    // public int BoardHeight { get; set; } = 16;
-    // public int NumMines { get; set; } = 40;
-    // public int Zoom { get; set; } = 2;
-    // public bool DevMode { get; set; } = false;
-    // public bool NoGuess { get; set; } = false;
-    // public int NoGuessTimeoutMs { get; set; } = 1500;
-    // public bool RevealShortcut { get; set; } = false;
-    // public bool FlagShortcut { get; set; } = false;
-    // public Scores Scores { get; set; } = new Scores([]);
 
+    public string? CurrentPuzzleStateKey { get; set; }
+    public Dictionary<string, PuzzleState> AllPuzzlesState { get; set; } = new();
+    
     [NonSerialized]
     private IDalamudPluginInterface? _pluginInterface;
 
@@ -32,4 +26,13 @@ public class Configuration : IPluginConfiguration
     {
         _pluginInterface!.SavePluginConfig(this);
     }
+}
+
+public class PuzzleState
+{
+    public string Pack { get; set; }
+    public string Title { get; set; }
+    public string PackTitleKey => Pack + Title; // used to key a dictionary
+    public bool[,]? BoardState { get; set; } // TODO save cross/dot instead of just fill
+    public bool Completed { get; set; }
 }
