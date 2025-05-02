@@ -33,6 +33,6 @@ public class PuzzleState
     public string Pack { get; set; }
     public string Title { get; set; }
     public string PackTitleKey => Pack + Title; // used to key a dictionary
-    public bool[,]? BoardState { get; set; } // TODO save cross/dot instead of just fill
+    public int[,]? BoardState { get; set; }
     public bool Completed { get; set; }
 }

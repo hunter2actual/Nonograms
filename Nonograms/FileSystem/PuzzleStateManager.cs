@@ -22,7 +22,7 @@ public class PuzzleStateManager(Configuration configuration)
                     Pack = packName,
                     Title = loadedPuzzlePack[i].title,
                     Completed = false,
-                    BoardState = new bool[,] { }
+                    BoardState = new int[,] { }
                 };
             }
         }
@@ -39,7 +39,7 @@ public class PuzzleStateManager(Configuration configuration)
                 Pack = pack,
                 Title = title,
                 Completed = false,
-                BoardState = new bool[,] { }
+                BoardState = new int[,] { }
             };
         }
         

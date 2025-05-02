@@ -59,6 +59,11 @@ public class PuzzleLoader(string directoryName)
                 currentPuzzleData = new List<bool[]>();
             }
         }
+        result.Add(new LoadedPuzzle
+        {
+            title = currentPuzzleTitle,
+            data = CleanPuzzleData(currentPuzzleData)
+        });
 
         return result;
     }

@@ -214,9 +214,7 @@ public class NonogramsGame
                 }
                 else
                 {
-                    Board.cells[x, y].contents = savedState.BoardState[x, y]
-                        ? CellContents.Filled
-                        : CellContents.Nothing;
+                    Board.cells[x, y].contents = (CellContents)savedState.BoardState[x, y];
                 }
             }
         }
@@ -232,12 +230,12 @@ public class NonogramsGame
         var puzzleState = _puzzleStateManager.GetCurrentPuzzleState();
         puzzleState.Completed = GameState is GameState.Victorious;
 
-        var boardState = new bool[Board.width, Board.height];
+        var boardState = new int[Board.width, Board.height];
         for (int x = 0; x < Board.width; x++)
         {
             for (int y = 0; y < Board.height; y++)
             {
-                boardState[x, y] = Board.cells[x, y].contents is CellContents.Filled;
+                boardState[x, y] = (int)Board.cells[x, y].contents;
             }
         }
         puzzleState.BoardState = boardState;

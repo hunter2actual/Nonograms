@@ -256,7 +256,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
 
     private void DrawGridLines(Vector2 boardBottomRight, ImDrawListPtr drawList)
     {
-        if (Game.GameState is not GameState.Playing) return;
+        // if (Game.GameState is not GameState.Playing) return;
         var colour = Colours.SkyBlue;
         var windowPos = ImGui.GetWindowPos() + ImGui.GetWindowContentRegionMin();
         
