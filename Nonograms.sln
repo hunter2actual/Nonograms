@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nonograms", "Nonograms\Nonograms.csproj", "{13C812E9-0D42-4B95-8646-40EEBF30636F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nonograms.Test", "Nonograms.Test\Nonograms.Test.csproj", "{9CF11B69-F916-4271-A3D9-42A539CE95CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|Any CPU.Build.0 = Release|x64
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|x64.ActiveCfg = Release|x64
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|x64.Build.0 = Release|x64
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Debug|x64.Build.0 = Debug|Any CPU
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{9CF11B69-F916-4271-A3D9-42A539CE95CC}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
