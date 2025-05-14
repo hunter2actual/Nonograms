@@ -70,7 +70,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
                     var pos = constraint.value.Length - Game.Board.longestColumnConstraint + y;
                     if (pos >= 0)
                     {
-                        CenteredText(constraint.value[pos].ToString(), constraint.satisfied);
+                        CenteredText(constraint.value[pos].ToString(), constraint.satisfied[pos]);
                     }
                 }
 
@@ -90,7 +90,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
                     var pos = constraint.value.Length - Game.Board.longestRowConstraint + x;
                     if (pos >= 0)
                     {
-                        CenteredText(constraint.value[pos].ToString(), constraint.satisfied);
+                        CenteredText(constraint.value[pos].ToString(), constraint.satisfied[pos]);
                     }
                 }
 

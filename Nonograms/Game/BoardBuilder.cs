@@ -88,7 +88,7 @@ public class BoardBuilder()
             constraints.Add(constraint.ToArray());
         }
 
-        return constraints.Select(x => new Constraint { value = x, satisfied = false }).ToList();
+        return constraints.Select(x => new Constraint { value = x, satisfied = [] }).ToList();
     }
 
     private int LongestConstraint(List<Constraint> constraints)

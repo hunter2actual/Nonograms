@@ -118,13 +118,13 @@ public class NonogramsGame
         for (var x = 0; x < Board.columnConstraints.Count; x++)
         {
             var constraint = Board.columnConstraints[x];
-            constraint.satisfied = Board.IsConstraintFulfilled(constraint, x, null);
+            constraint.satisfied = Board.GetHintSatisfaction(constraint, x, null);
         }
 
         for (var y = 0; y < Board.rowConstraints.Count; y++)
         {
             var constraint = Board.rowConstraints[y];
-            constraint.satisfied = Board.IsConstraintFulfilled(constraint, null, y);
+            constraint.satisfied = Board.GetHintSatisfaction(constraint, null, y);
         }
     }
 
@@ -149,8 +149,8 @@ public class NonogramsGame
 
     private void AutoCross(int x, int y)
     {
-        if (Board.rowConstraints[y].satisfied) CrossRow(y);
-        if (Board.columnConstraints[x].satisfied) CrossColumn(x);
+        if (Board.rowConstraints[y].satisfied.All(s => s)) CrossRow(y);
+        if (Board.columnConstraints[x].satisfied.All(s => s)) CrossColumn(x);
     }
 
     private void AutoCross(IEnumerable<(int x, int y)> cells)
@@ -165,12 +165,12 @@ public class NonogramsGame
     {
         for (int x = 0; x < Board.width; x++)
         {
-            if (Board.columnConstraints[x].satisfied) CrossColumn(x);
+            if (Board.columnConstraints[x].satisfied.All(s => s)) CrossColumn(x);
         }
         
         for (int y = 0; y < Board.height; y++)
         {
-            if (Board.rowConstraints[y].satisfied) CrossRow(y);
+            if (Board.rowConstraints[y].satisfied.All(s => s)) CrossRow(y);
         }
     }
 

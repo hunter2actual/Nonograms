@@ -22,7 +22,7 @@ public record Cell
 public record Constraint
 {
     public int[] value;
-    public bool satisfied;
+    public bool[] satisfied;
 }
 
 public enum CellContents { Nothing, Filled, Cross, Circle }

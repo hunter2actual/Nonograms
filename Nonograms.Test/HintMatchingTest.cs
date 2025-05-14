@@ -21,7 +21,7 @@ public class Tests
     [InlineData("### #  ##", new[] { 1, 3, 1, 2 }, new[] { false, true, true, true })]
     [InlineData("## ##", new[] { 2, 3 }, new[] { true, false })]
     [InlineData("# #", new[] { 3 }, new[] { false })]
-    [InlineData("     ", new int[0], new bool[0])]
+    [InlineData("     ", new[] { 0 }, new[] { true })]
     [InlineData("#", new[] { 1 }, new[] { true })]
     [InlineData("  #", new[] { 1 }, new[] { true })]
     [InlineData("#  #", new[] { 1, 1 }, new[] { true, true })]

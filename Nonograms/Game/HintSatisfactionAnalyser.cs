@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Nonograms.Game;
 
@@ -18,6 +19,9 @@ public static class HintSatisfactionAnalyser
 
         bool[] satisfied = new bool[hints.Length];
         List<int> blocks = GetFilledBlocks(line);
+
+        if (hints.Length == 1 && hints[0] == 0 && blocks.Count == 0)
+            return [true];
 
         if (blocks.Count == 0 || blocks.Count > hints.Length)
             return satisfied;
