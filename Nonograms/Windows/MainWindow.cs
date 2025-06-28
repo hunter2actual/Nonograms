@@ -26,6 +26,7 @@ public class MainWindow : Window, IDisposable
     private int _selectedPuzzlePack;
     private List<LoadedPuzzle> _loadedPuzzlePack = new();
     private LoadedPuzzle? _selectedPuzzle;
+    private int? _selectedPuzzleContextMenu = null;
 
     public MainWindow(Plugin plugin, IFontAtlas fontAtlas, Configuration configuration, PuzzleLoader puzzleLoader)
         : base("Nonograms", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoResize)
@@ -53,6 +54,17 @@ public class MainWindow : Window, IDisposable
             return;
         }
         
+        // Settings button
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Cog))
+        {
+            _drawConfig();
+        }
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Settings");
+        }
+        ImGui.SameLine();
+        
         // Select a puzzle pack
         var fullFileNames = _files.Keys.ToArray();
         var puzzlePackNames = _files.Values.ToArray();
@@ -71,6 +83,7 @@ public class MainWindow : Window, IDisposable
             {
                 var savedState = _puzzleStateManager.GetPuzzleState(puzzlePackNames[_selectedPuzzlePack], _loadedPuzzlePack[i].title);
 
+                // Button
                 string label;
                 if (savedState.Completed)
                 {
@@ -81,7 +94,6 @@ public class MainWindow : Window, IDisposable
                 {
                     label = $"Puzzle {i + 1}";
                 }
-
                 if (ImGui.Button(label, buttonSize))
                 {
                     _selectedPuzzle = _loadedPuzzlePack[i];
@@ -91,10 +103,34 @@ public class MainWindow : Window, IDisposable
                     game.InitialiseFromState(savedState);
                     _gameBoard = new GameBoard(game, _fontAtlas, _configuration);
                 }
-
                 if (savedState.Completed)
                 {
                     ClearButtonStyle();
+                }
+                
+                // Context menu
+                if (ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+                {
+                    ImGui.OpenPopup($"Puzzlecontext{i}");
+                    _selectedPuzzleContextMenu = null;
+                }
+                if (ImGui.BeginPopup($"Puzzlecontext{i}"))
+                {
+                    if (_selectedPuzzleContextMenu == i)
+                    {
+                        ImGui.Text("Are you sure?");
+                        if (ImGui.Button("Reset puzzle"))
+                        {
+                            _selectedPuzzleContextMenu = null;
+                            ImGui.CloseCurrentPopup();
+                        }
+                    }
+                    else
+                    {
+                        if (ImGui.Button("Reset puzzle"))
+                            _selectedPuzzleContextMenu = i;
+                    }
+                    ImGui.EndPopup();
                 }
                 
                 if ((i + 1) % 5 > 0) ImGui.SameLine();
@@ -118,17 +154,6 @@ public class MainWindow : Window, IDisposable
         if (ImGui.IsItemHovered())
         {
             ImGui.SetTooltip("Back");
-        }
-
-        // Draw settings button
-        ImGui.SameLine();
-        if (ImGuiComponents.IconButton(FontAwesomeIcon.Cog))
-        {
-            _drawConfig();
-        }
-        if (ImGui.IsItemHovered())
-        {
-            ImGui.SetTooltip("Settings");
         }
 
         // Draw puzzle name

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using Dalamud.Interface.GameFonts;
 using Dalamud.Interface.ManagedFontAtlas;
 using Dalamud.Interface.Utility.Raii;
@@ -14,7 +16,6 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
     public NonogramsGame Game { get; set; } = game;
     private int _cellSizePx;
     private Vector2 _cellSizePxVec2;
-    private Vector2 _boardTopLeft = Vector2.Zero;
     private Vector2 _boardBottomRight = Vector2.Zero;
     
     // For the MultiSelectionBrush
@@ -35,7 +36,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
         };
         var font = fontAtlas.NewGameFontHandle(new GameFontStyle(fontSize));
         font.Push();
-        
+
         Vector2 currentCellCursorPos = Vector2.Zero;
         Vector2 tlCursorPos = Vector2.Zero;
         var drawList = ImGui.GetWindowDrawList();
@@ -43,7 +44,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
 
         using var cellStyle = ImRaii.PushStyle(ImGuiStyleVar.CellPadding, Vector2.Zero);
         using var itemStyle = ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
-        
+
         // background
         drawList.AddRectFilledMultiColor(
             ImGui.GetWindowContentRegionMin(),
@@ -150,18 +151,39 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
             }
             ImGui.EndTable();
         }
-        
+
         DrawMultiSelectionBrush(drawList);
         DrawGridLines(_boardBottomRight, drawList);
         DrawHighlightCross(currentCellCursorPos, _boardBottomRight, drawList);
         ImGui.SetCursorPos(tlCursorPos);
         DrawAntiClickField(new Vector2(Game.Board.width, Game.Board.height) * _cellSizePx);
+        font.Pop();
+        DrawUndoRedoButtons();
         ImGui.SetWindowSize(_boardBottomRight
             - ImGui.GetWindowPos()
             + ImGui.GetWindowContentRegionMin()*Vector2.UnitX
-            + Vector2.UnitY*5); // padding
+            + Vector2.UnitY*35); // footer
 
-        font.Pop();
+    }
+
+    // TODO Maybe extract to footer class
+    private void DrawUndoRedoButtons()
+    {
+        var buttonPos = ImGui.GetWindowContentRegionMin() +
+                        Vector2.UnitY * ((Game.Board.height + Game.Board.longestColumnConstraint) * _cellSizePx + 5);
+        ImGui.SetCursorPos(buttonPos);
+        
+        ImGuiComponents.IconButton(FontAwesomeIcon.Undo);
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Undo");
+        }
+        ImGui.SameLine();
+        ImGuiComponents.IconButton(FontAwesomeIcon.Redo);
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Redo");
+        }
     }
 
     private Vector2 GetWindowCursorPos() => ImGui.GetCursorPos() + ImGui.GetWindowPos();
@@ -359,26 +381,11 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
                 cells.Add((x, y));
             }
             
-            // foreach (var cell in cells)
-            // {
-            //     if (fill) Game.Fill(cell.x, cell.y);
-            //     else Game.Clear(cell.x, cell.y);
-            // }
-            
             if (fill) Game.Fill(cells);
             else Game.Clear(cells);
 
             _startCell = _endCell;
         }
-    }
-
-    private void DrawAntiClickField()
-    {
-        // Cover the board in an anticlick field to stop window movement
-        var cursorPos = ImGui.GetCursorPos();
-        ImGui.SetCursorPos(_boardTopLeft);
-        ImGui.InvisibleButton("anticlick", _boardBottomRight - _boardTopLeft);
-        ImGui.SetCursorPos(cursorPos);
     }
     
     private void DrawAntiClickField(Vector2 size)
