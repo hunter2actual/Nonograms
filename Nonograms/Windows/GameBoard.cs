@@ -17,6 +17,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
     private int _cellSizePx;
     private Vector2 _cellSizePxVec2;
     private Vector2 _boardBottomRight = Vector2.Zero;
+    private Vector2 _boardTopLeft = Vector2.Zero;
     
     // For the MultiSelectionBrush
     private (int x, int y) _startCell; 
@@ -101,7 +102,11 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
                     ImGui.TableNextColumn();
                     var currentCursorPos = ImGui.GetCursorPos();
 
-                    if (x == 0 && y == 0) tlCursorPos = ImGui.GetCursorPos();
+                    if (x == 0 && y == 0)
+                    {
+                        tlCursorPos = ImGui.GetCursorPos();
+                        _boardTopLeft = GetWindowCursorPos();
+                    }
                     
                     DrawBoardCell(x, y, drawList);
                     ImGui.SetCursorPos(currentCursorPos);
@@ -153,7 +158,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
         }
 
         DrawMultiSelectionBrush(drawList);
-        DrawGridLines(_boardBottomRight, drawList);
+        DrawGridLines(_boardTopLeft, _boardBottomRight, drawList);
         DrawHighlightCross(currentCellCursorPos, _boardBottomRight, drawList);
         ImGui.SetCursorPos(tlCursorPos);
         DrawAntiClickField(new Vector2(Game.Board.width, Game.Board.height) * _cellSizePx);
@@ -289,7 +294,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
         }
     }
 
-    private void DrawGridLines(Vector2 boardBottomRight, ImDrawListPtr drawList)
+    private void DrawGridLines(Vector2 boardTopLeft, Vector2 boardBottomRight, ImDrawListPtr drawList)
     {
         // if (Game.GameState is not GameState.Playing) return;
         var colour = Colours.SkyBlue;
@@ -297,34 +302,38 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
         
         for (int x = 0; x < Game.Board.width; x++)
         {
+            var lineEnd = x != 0 && Game.GameState is GameState.Victorious ? boardTopLeft.Y : boardBottomRight.Y;
+            
             if (x % 5 == 0)
             {
                 var tl = new Vector2(windowPos.X + (x+Game.Board.longestRowConstraint) * _cellSizePx, windowPos.Y);
-                var br = new Vector2(windowPos.X + (x+Game.Board.longestRowConstraint) * _cellSizePx + 1, boardBottomRight.Y);
+                var br = new Vector2(windowPos.X + (x+Game.Board.longestRowConstraint) * _cellSizePx + 1, lineEnd);
                 drawList.AddRectFilled(tl, br, colour);
             }
 
             if (x == Game.Board.width - 1)
             {
                 var tl = new Vector2(windowPos.X + (x+Game.Board.longestRowConstraint+1) * _cellSizePx, windowPos.Y);
-                var br = new Vector2(windowPos.X + (x+Game.Board.longestRowConstraint+1) * _cellSizePx + 1, boardBottomRight.Y);
+                var br = new Vector2(windowPos.X + (x+Game.Board.longestRowConstraint+1) * _cellSizePx + 1, lineEnd);
                 drawList.AddRectFilled(tl, br, colour);
             }
         }
 
         for (int y = 0; y < Game.Board.height; y++)
         {
+            var lineEnd = y != 0 && Game.GameState is GameState.Victorious ? boardTopLeft.X : boardBottomRight.X;
+            
             if (y % 5 == 0)
             {
                 var tl = new Vector2(windowPos.X, windowPos.Y + (y+Game.Board.longestColumnConstraint)*_cellSizePx);
-                var br = new Vector2(boardBottomRight.X, windowPos.Y + (y+Game.Board.longestColumnConstraint)*_cellSizePx + 1);
+                var br = new Vector2(lineEnd, windowPos.Y + (y+Game.Board.longestColumnConstraint)*_cellSizePx + 1);
                 drawList.AddRectFilled(tl, br, colour);
             }
 
             if (y == Game.Board.height - 1)
             {
                 var tl = new Vector2(windowPos.X, windowPos.Y + (y+Game.Board.longestColumnConstraint+1)*_cellSizePx);
-                var br = new Vector2(boardBottomRight.X, windowPos.Y + (y+Game.Board.longestColumnConstraint+1)*_cellSizePx + 1);
+                var br = new Vector2(lineEnd, windowPos.Y + (y+Game.Board.longestColumnConstraint+1)*_cellSizePx + 1);
                 drawList.AddRectFilled(tl, br, colour);
             }
         }
