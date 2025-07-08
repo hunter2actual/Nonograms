@@ -35,4 +35,6 @@ public class PuzzleState
     public string PackTitleKey => Pack + Title;
     public int[,]? BoardState { get; set; }
     public bool Completed { get; set; }
+    public string[] UndoStack { get; set; }
+    public string[] RedoStack { get; set; }
 }

@@ -238,6 +238,9 @@ public class NonogramsGame
                 }
             }
         }
+
+        _undoStack = new Stack<Move>(savedState.UndoStack?.Select(x => x.ToMove()).Reverse() ?? Array.Empty<Move>());
+        _redoStack = new Stack<Move>(savedState.RedoStack?.Select(x => x.ToMove()).Reverse()  ?? Array.Empty<Move>());
         
         UpdateHintSatisfaction();
         AutoCrossAll();
@@ -259,6 +262,9 @@ public class NonogramsGame
             }
         }
         puzzleState.BoardState = boardState;
+
+        puzzleState.UndoStack = _undoStack.Select(MoveExtensions.ToString).ToArray();
+        puzzleState.RedoStack = _redoStack.Select(MoveExtensions.ToString).ToArray();
 
         _puzzleStateManager.SetCurrentPuzzleState(puzzleState);
     }
