@@ -7,10 +7,10 @@ public class PuzzleStateManager(Configuration configuration)
 {
     public void InitialisePack(string packName, List<LoadedPuzzle> loadedPuzzlePack)
     {
-        if (!configuration.AllPuzzlesState.TryGetValue(packName, out var puzzles))
-        {
-            return;
-        }
+        // if (!configuration.AllPuzzlesState.TryGetValue(packName, out var puzzles))
+        // {
+        //     return;
+        // }
         
         for (int i = 0; i < loadedPuzzlePack.Count; i++)
         {
@@ -26,6 +26,16 @@ public class PuzzleStateManager(Configuration configuration)
                 };
             }
         }
+        configuration.Save();
+    }
+
+    public void ResetPuzzle(string packName, List<LoadedPuzzle> loadedPuzzlePack, int index)
+    {
+        var loadedPuzzleKey = packName + loadedPuzzlePack[index].title;
+
+        if (!configuration.AllPuzzlesState.TryGetValue(loadedPuzzleKey, out var puzzleState)) return;
+        puzzleState.BoardState = new int[,] { };
+        puzzleState.Completed = false;
         configuration.Save();
     }
 
@@ -63,19 +73,19 @@ public class PuzzleStateManager(Configuration configuration)
         return configuration.AllPuzzlesState[configuration.CurrentPuzzleStateKey];
     }
 
-    public void CompletedCurrentPuzzle()
-    {
-        if (configuration.CurrentPuzzleStateKey is null) return;
-        
-        configuration.AllPuzzlesState[configuration.CurrentPuzzleStateKey].Completed = true;
-        configuration.CurrentPuzzleStateKey = null;
-        configuration.Save();
-    }
-
-    public void ClearCurrentPuzzleState()
-    {
-        configuration.CurrentPuzzleStateKey = null;
-        // TODO use on "reset puzzle" functionality?
-        configuration.Save();
-    }
+    // public void CompletedCurrentPuzzle()
+    // {
+    //     if (configuration.CurrentPuzzleStateKey is null) return;
+    //     
+    //     configuration.AllPuzzlesState[configuration.CurrentPuzzleStateKey].Completed = true;
+    //     configuration.CurrentPuzzleStateKey = null;
+    //     configuration.Save();
+    // }
+    //
+    // public void ClearCurrentPuzzleState()
+    // {
+    //     configuration.CurrentPuzzleStateKey = null;
+    //     // TODO use on "reset puzzle" functionality?
+    //     configuration.Save();
+    // }
 }

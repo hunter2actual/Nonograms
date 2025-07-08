@@ -48,12 +48,14 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (_selectedPuzzle is not null)
-        {
+        if (_selectedPuzzle is null)
+            DrawPuzzleSelection();
+        else
             DrawPuzzle();
-            return;
-        }
-        
+    }
+
+    private void DrawPuzzleSelection()
+    {
         // Settings button
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Cog))
         {
@@ -83,63 +85,72 @@ public class MainWindow : Window, IDisposable
             {
                 var savedState = _puzzleStateManager.GetPuzzleState(puzzlePackNames[_selectedPuzzlePack], _loadedPuzzlePack[i].title);
 
-                // Button
-                string label;
-                if (savedState.Completed)
-                {
-                    label = savedState.Title;
-                    StyleButtonPositive();
-                }
-                else
-                {
-                    label = $"Puzzle {i + 1}";
-                }
-                if (ImGui.Button(label, buttonSize))
-                {
-                    _selectedPuzzle = _loadedPuzzlePack[i];
-                    var game = new NonogramsGame(_puzzleStateManager, _selectedPuzzle);
-
-                    _puzzleStateManager.SetCurrentPuzzleState(savedState);
-                    game.InitialiseFromState(savedState);
-                    _gameBoard = new GameBoard(game, _fontAtlas, _configuration);
-                }
-                if (savedState.Completed)
-                {
-                    ClearButtonStyle();
-                }
-                
-                // Context menu
-                if (ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Right))
-                {
-                    ImGui.OpenPopup($"Puzzlecontext{i}");
-                    _selectedPuzzleContextMenu = null;
-                }
-                if (ImGui.BeginPopup($"Puzzlecontext{i}"))
-                {
-                    if (_selectedPuzzleContextMenu == i)
-                    {
-                        ImGui.Text("Are you sure?");
-                        if (ImGui.Button("Reset puzzle"))
-                        {
-                            _selectedPuzzleContextMenu = null;
-                            ImGui.CloseCurrentPopup();
-                        }
-                    }
-                    else
-                    {
-                        if (ImGui.Button("Reset puzzle"))
-                            _selectedPuzzleContextMenu = i;
-                    }
-                    ImGui.EndPopup();
-                }
+                DrawPuzzleSelectionButton(savedState, i, buttonSize);
+                DrawPuzzleSelectionContextMenu(i, puzzlePackNames);
                 
                 if ((i + 1) % 5 > 0) ImGui.SameLine();
             }
         }
     }
 
+    private void DrawPuzzleSelectionButton(PuzzleState? savedState, int index, Vector2 buttonSize)
+    {
+        string label;
+        if (savedState.Completed)
+        {
+            label = savedState.Title;
+            StyleButtonPositive();
+        }
+        else
+        {
+            label = $"Puzzle {index + 1}";
+        }
+        if (ImGui.Button(label, buttonSize))
+        {
+            _selectedPuzzle = _loadedPuzzlePack[index];
+            var game = new NonogramsGame(_puzzleStateManager, _selectedPuzzle);
+
+            _puzzleStateManager.SetCurrentPuzzleState(savedState);
+            game.InitialiseFromState(savedState);
+            _gameBoard = new GameBoard(game, _fontAtlas, _configuration);
+        }
+        if (savedState.Completed)
+        {
+            ClearButtonStyle();
+        }
+    }
+
+    private void DrawPuzzleSelectionContextMenu(int index, string[] puzzlePackNames)
+    {
+        if (ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+        {
+            ImGui.OpenPopup($"Puzzlecontext{index}");
+            _selectedPuzzleContextMenu = null;
+        }
+        if (ImGui.BeginPopup($"Puzzlecontext{index}"))
+        {
+            if (_selectedPuzzleContextMenu == index)
+            {
+                ImGui.Text("Are you sure?");
+                if (ImGui.Button("Reset puzzle"))
+                {
+                    _selectedPuzzleContextMenu = null;
+                    ImGui.CloseCurrentPopup();
+                    _puzzleStateManager.ResetPuzzle(puzzlePackNames[_selectedPuzzlePack], _loadedPuzzlePack, index);
+                }
+            }
+            else
+            {
+                if (ImGui.Button("Reset puzzle"))
+                    _selectedPuzzleContextMenu = index;
+            }
+            ImGui.EndPopup();
+        }
+    }
+
     private void DrawPuzzle()
     {
+        var puzzleTitle = _selectedPuzzle!.title;
         using var style = ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, Vector2.Zero);
 
         // Draw nonogram
@@ -158,7 +169,7 @@ public class MainWindow : Window, IDisposable
 
         // Draw puzzle name
         if (_gameBoard!.Game.GameState is GameState.Victorious)
-            ImGui.TextColored(new Vector4(1f, 1f, 1f, 1f), _selectedPuzzle!.title);
+            ImGui.TextColored(new Vector4(1f, 1f, 1f, 1f), puzzleTitle);
     }
 
     private void StyleButtonPositive()

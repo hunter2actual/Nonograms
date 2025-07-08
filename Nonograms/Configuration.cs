@@ -32,7 +32,7 @@ public class PuzzleState
 {
     public string Pack { get; set; }
     public string Title { get; set; }
-    public string PackTitleKey => Pack + Title; // used to key a dictionary
+    public string PackTitleKey => Pack + Title;
     public int[,]? BoardState { get; set; }
     public bool Completed { get; set; }
 }

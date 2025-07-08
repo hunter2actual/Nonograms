@@ -166,24 +166,37 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
 
     }
 
-    // TODO Maybe extract to footer class
     private void DrawUndoRedoButtons()
     {
         var buttonPos = ImGui.GetWindowContentRegionMin() +
                         Vector2.UnitY * ((Game.Board.height + Game.Board.longestColumnConstraint) * _cellSizePx + 5);
         ImGui.SetCursorPos(buttonPos);
-        
-        ImGuiComponents.IconButton(FontAwesomeIcon.Undo);
+
+        // Undo
+        ImGui.BeginDisabled(!Game.CanUndo);
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Undo))
+        {
+            Game.Undo();
+        }
         if (ImGui.IsItemHovered())
         {
             ImGui.SetTooltip("Undo");
         }
+        ImGui.EndDisabled();
+
         ImGui.SameLine();
-        ImGuiComponents.IconButton(FontAwesomeIcon.Redo);
+        
+        // Redo
+        ImGui.BeginDisabled(!Game.CanRedo);
+        if(ImGuiComponents.IconButton(FontAwesomeIcon.Redo))
+        {
+            Game.Redo();
+        };
         if (ImGui.IsItemHovered())
         {
             ImGui.SetTooltip("Redo");
         }
+        ImGui.EndDisabled();
     }
 
     private Vector2 GetWindowCursorPos() => ImGui.GetCursorPos() + ImGui.GetWindowPos();
@@ -381,8 +394,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
                 cells.Add((x, y));
             }
             
-            if (fill) Game.Fill(cells);
-            else Game.Clear(cells);
+            Game.Fill(cells, fill ? CellContents.Filled : CellContents.Nothing);
 
             _startCell = _endCell;
         }

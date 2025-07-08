@@ -28,3 +28,7 @@ public record Constraint
 public enum CellContents { Nothing, Filled, Cross, Circle }
 
 public enum GameState { Playing, Victorious }
+
+public abstract record Move;
+public record CellMove(int X, int Y, CellContents PreviousContents, CellContents NewContents) : Move;
+public record MultiMove(IEnumerable<CellMove> Moves) : Move;
