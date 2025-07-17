@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.GameFonts;
@@ -18,6 +19,7 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
     private Vector2 _cellSizePxVec2;
     private Vector2 _boardBottomRight = Vector2.Zero;
     private Vector2 _boardTopLeft = Vector2.Zero;
+    private bool _resetLatch = false;
     
     // For the MultiSelectionBrush
     private (int x, int y) _startCell; 
@@ -196,12 +198,38 @@ public class GameBoard(NonogramsGame game, IFontAtlas fontAtlas, Configuration c
         if(ImGuiComponents.IconButton(FontAwesomeIcon.Redo))
         {
             Game.Redo();
-        };
+        }
         if (ImGui.IsItemHovered())
         {
             ImGui.SetTooltip("Redo");
         }
         ImGui.EndDisabled();
+        
+        ImGui.SameLine();
+        
+        // Reset
+        if (_resetLatch)
+        {
+            if (ImGui.Button("Are you sure?"))
+            {
+                Game.Reset();
+                _resetLatch = false;
+            }
+        }
+        else
+        {
+            if (ImGui.Button("Reset puzzle"))
+            {
+                _resetLatch = true;
+                UnLatchAfter(TimeSpan.FromSeconds(7));
+            }
+        }
+
+        async Task UnLatchAfter(TimeSpan t)
+        {
+            await Task.Delay(t);
+            _resetLatch = false;
+        }
     }
 
     private Vector2 GetWindowCursorPos() => ImGui.GetCursorPos() + ImGui.GetWindowPos();

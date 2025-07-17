@@ -1,8 +1,8 @@
 # Nonograms
 
-
 Todo:
 - "in progress" colour
 - click and drag x's
 - little pictures on menu
-- more puzzle transcription & a tool to help with that
+- themes
+- partial hint algo should use x's 

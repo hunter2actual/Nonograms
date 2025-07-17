@@ -313,4 +313,28 @@ public class NonogramsGame
                 break;
         }
     }
+
+    public void Reset()
+    {
+        var moves = new List<CellMove>();
+        for (int x = 0; x < Board.width; x++)
+        {
+            for (int y = 0; y < Board.height; y++)
+            {
+                moves.Add(new CellMove(x, y, Board.cells[x, y].contents, CellContents.Nothing));
+                Board.cells[x, y].contents = CellContents.Nothing;
+            }
+        }
+        if (moves.Any())
+        {
+            _undoStack.Push(new MultiMove(moves));
+            _redoStack.Clear();
+            GameState = GameState.Playing;
+        }
+            
+        UpdateHintSatisfaction();
+        AutoCrossAll();
+        CheckWin();
+        SaveProgress();
+    }
 }

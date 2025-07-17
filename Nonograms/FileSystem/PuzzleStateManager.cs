@@ -7,25 +7,21 @@ public class PuzzleStateManager(Configuration configuration)
 {
     public void InitialisePack(string packName, List<LoadedPuzzle> loadedPuzzlePack)
     {
-        // if (!configuration.AllPuzzlesState.TryGetValue(packName, out var puzzles))
-        // {
-        //     return;
-        // }
-        
-        for (int i = 0; i < loadedPuzzlePack.Count; i++)
+        foreach (var puzzle in loadedPuzzlePack)
         {
-            var loadedPuzzleKey = packName + loadedPuzzlePack[i].title;
+            var loadedPuzzleKey = packName + puzzle.title;
             if (!configuration.AllPuzzlesState.ContainsKey(loadedPuzzleKey))
             {
                 configuration.AllPuzzlesState[loadedPuzzleKey] = new PuzzleState
                 {
                     Pack = packName,
-                    Title = loadedPuzzlePack[i].title,
+                    Title = puzzle.title,
                     Completed = false,
                     BoardState = new int[,] { }
                 };
             }
         }
+
         configuration.Save();
     }
 

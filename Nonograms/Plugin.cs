@@ -20,12 +20,14 @@ public sealed class Service
 public sealed class Plugin : IDalamudPlugin
 {
     private const string CommandName = "/nonograms";
+    private const string CommandNameTranscribe = "/nonogramtranscribe"; // dev tool for making puzzles
 
     public Configuration Configuration { get; init; }
     public WindowSystem WindowSystem = new("nonograms");
     private IFontAtlas FontAtlas { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
+    private TranscriptionWindow TranscriptionWindow { get; init; }
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
@@ -46,6 +48,13 @@ public sealed class Plugin : IDalamudPlugin
         {
             HelpMessage = "Open the Nonograms window"
         });
+        
+        TranscriptionWindow = new TranscriptionWindow();
+        WindowSystem.AddWindow(TranscriptionWindow);
+        Service.CommandManager.AddHandler(CommandNameTranscribe, new CommandInfo(OnCommandTranscribe)
+        {
+            HelpMessage = "Open the Transcription window"
+        });
 
         pluginInterface.UiBuilder.Draw += DrawUI;
         pluginInterface.UiBuilder.OpenMainUi += DrawMainUI;
@@ -65,6 +74,11 @@ public sealed class Plugin : IDalamudPlugin
     private void OnCommand(string command, string args)
     {
         MainWindow.IsOpen = !MainWindow.IsOpen;
+    }
+    
+    private void OnCommandTranscribe(string command, string args)
+    { 
+        TranscriptionWindow.IsOpen = !TranscriptionWindow.IsOpen;
     }
 
     private void DrawUI()
