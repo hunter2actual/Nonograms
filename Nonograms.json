@@ -19,8 +19,8 @@
     "LoadPriority": 0,
     "Punchline": "Classic puzzle game.",
     "AcceptsFeedback": true,
-    "DownloadLinkInstall": "https://github.com/hunter2actual/Nonograms/releases/download/0.0.5/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/hunter2actual/Nonograms/releases/download/0.0.5/latest.zip",
+    "DownloadLinkInstall": "https://github.com/hunter2actual/Nonograms/releases/download/0.0.6/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/hunter2actual/Nonograms/releases/download/0.0.6/latest.zip",
     "IconUrl": "https://raw.githubusercontent.com/hunter2actual/Nonograms/master/images/icon.png",
     "Changelog": "New puzzle pack & dev transcription feature"
   }
