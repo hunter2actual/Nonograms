@@ -41,4 +41,6 @@ public class Tests
         var result = HintSatisfactionAnalyser.CheckHintSatisfaction(cellStateLine, hints);
         Assert.Equal(expected, result);
     }
+    
+    // TODO only satisfy hints where the block is surrounded by crosses
 }
