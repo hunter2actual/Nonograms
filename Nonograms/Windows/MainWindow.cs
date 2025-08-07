@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Interface;
@@ -9,7 +8,7 @@ using Dalamud.Interface.ManagedFontAtlas;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Nonograms.Game;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Nonograms.FileSystem;
 
 namespace Nonograms.Windows;
@@ -158,7 +157,7 @@ public class MainWindow : Window, IDisposable
 
         // Draw a back button
         ImGui.SetCursorPos(ImGui.GetWindowContentRegionMin());
-        if (ImGui.ArrowButton("back", ImGuiDir.Left))
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.ArrowLeft))
         {
             _selectedPuzzle = null;
         }
